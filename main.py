@@ -19,6 +19,8 @@ stylesheets = [
 
 app = dash.Dash(__name__, external_stylesheets=stylesheets)
 
+app.title = "Sexy Dashboard"
+
 server = app.server
 
 bubble_map = px.scatter_geo(
