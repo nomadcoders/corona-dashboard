@@ -81,19 +81,27 @@ app.layout = html.Div(
             },
             children=[
                 html.Div(children=[dcc.Graph(figure=bars_graph)]),
-                html.Div(children=[dcc.Dropdown(id="country"),]),
+                html.Div(
+                    children=[
+                        dcc.Dropdown(
+                            id="country",
+                            options=[
+                                {"label": country, "value": country}
+                                for country in dropdown_options
+                            ],
+                        ),
+                        html.H1(id="country-output"),
+                    ]
+                ),
             ],
         ),
     ],
 )
 
 
-@app.callback(Output("hello-output", "children"), [Input("country", "value")])
+@app.callback(Output("country-output", "children"), [Input("country", "value")])
 def update_hello(value):
-    if value is None:
-        return "Hello Anonymous"
-    else:
-        return f"Hello {value}"
+    print(value)
 
 
 if __name__ == "__main__":
