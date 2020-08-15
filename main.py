@@ -19,6 +19,8 @@ stylesheets = [
 
 app = dash.Dash(__name__, external_stylesheets=stylesheets)
 
+server = app.server
+
 bubble_map = px.scatter_geo(
     countries_df,
     size="Confirmed",
@@ -91,6 +93,12 @@ app.layout = html.Div(
                     style={"grid-column": "span 3"},
                     children=[
                         dcc.Dropdown(
+                            style={
+                                "width": 320,
+                                "margin": "0 auto",
+                                "color": "#111111",
+                            },
+                            placeholder="Select a Country",
                             id="country",
                             options=[
                                 {"label": country, "value": country}
@@ -125,7 +133,3 @@ def update_hello(value):
     fig["data"][1]["line"]["color"] = "#8e44ad"
     fig["data"][2]["line"]["color"] = "#27ae60"
     return fig
-
-
-if __name__ == "__main__":
-    app.run_server(debug=True)
