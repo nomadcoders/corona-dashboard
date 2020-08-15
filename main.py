@@ -1,6 +1,7 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.dependencies import Input, Output
 import plotly.express as px
 from data import countries_df, totals_df
 from builders import make_table
@@ -15,6 +16,7 @@ app = dash.Dash(__name__, external_stylesheets=stylesheets)
 bubble_map = px.scatter_geo(
     countries_df,
     size="Confirmed",
+    projection="equirectangular",
     hover_name="Country_Region",
     color="Confirmed",
     locations="Country_Region",
@@ -30,7 +32,9 @@ bubble_map = px.scatter_geo(
         "Country_Region": False,
     },
 )
-bubble_map.update_layout(margin=dict(l=0, r=0, t=50, b=0))
+bubble_map.update_layout(
+    margin=dict(l=0, r=0, t=50, b=0), coloraxis_colorbar=dict(xanchor="left", x=0)
+)
 
 bars_graph = px.bar(
     totals_df,
@@ -75,10 +79,26 @@ app.layout = html.Div(
                 "gap": 50,
                 "gridTemplateColumns": "repeat(4, 1fr)",
             },
-            children=[html.Div(children=[dcc.Graph(figure=bars_graph)]),],
+            children=[
+                html.Div(children=[dcc.Graph(figure=bars_graph)]),
+                html.Div(
+                    children=[
+                        dcc.Input(placeholder="What is your name?", id="hello-input"),
+                        html.H2(children="Hello anonymous", id="hello-output"),
+                    ]
+                ),
+            ],
         ),
     ],
 )
+
+
+@app.callback(Output("hello-output", "children"), [Input("hello-input", "value")])
+def update_hello(value):
+    if value is None:
+        return "Hello Anonymous"
+    else:
+        return f"Hello {value}"
 
 
 if __name__ == "__main__":
